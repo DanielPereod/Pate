@@ -5,7 +5,7 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 
 export default class RecipesScreen extends Component {
   handleFocusScreen = this.props.navigation.addListener("focus", () => {
-    this.props.handleMainColorChange("#fe8989");
+    this.props.handleMainColorChange(this.props.color);
   });
 
   handlePressNavigation = (navScreen) => {
@@ -13,20 +13,29 @@ export default class RecipesScreen extends Component {
   };
 
   showBasis = () => {
-    if (this.props.basis) {
+    const {color, recipesData, basis, navigation} = this.props
+    if (basis) {
       return (
-        <View style={styles.basisBox}>
-          <RecipeTab
-            color={this.props.color}
-            image={this.props.recipesData[0][3][0]}
-            recipeTitle={this.props.recipesData[0][0][0]}
-          />
-        </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Recipe", {
+            ingredients: recipesData[0][1],
+            steps: recipesData[0][2],
+            image: recipesData[0][3][0],
+            mainColor: color,
+          })}
+        >
+          <View style={styles.basisBox}>
+            <RecipeTab
+              color={color}
+              image={recipesData[0][3][0]}
+              recipeTitle={recipesData[0][0][0]}
+            />
+          </View>
+        </TouchableOpacity>
       );
     }
   };
   render() {
-    
     return (
       <ScrollView>
         {this.props.basis && this.showBasis()}
@@ -34,19 +43,22 @@ export default class RecipesScreen extends Component {
           {this.props.recipesData[1].map((recipe, key) => (
             <TouchableOpacity
               key={key}
-              onPress={() => this.props.navigation.navigate('Recipe', {
-                ingredients: recipe[1],
-                steps: recipe[2],
-                image: recipe[3][0],
-                mainColor: "#fe8989",
-              })}
-              style={styles.recipeBox}
+              onPress={() =>
+                this.props.navigation.navigate("Recipe", {
+                  ingredients: recipe[1],
+                  steps: recipe[2],
+                  image: recipe[3][0],
+                  mainColor: this.props.color,
+                })
+              }
             >
-              <RecipeTab
-                color={"#f1f1f1"}
-                image={recipe[3][0]}
-                recipeTitle={recipe[0]}
-              />
+              <View style={styles.recipeTabBox}>
+                <RecipeTab
+                  color={"#f1f1f1"}
+                  image={recipe[3][0]}
+                  recipeTitle={recipe[0]}
+                />
+              </View>
             </TouchableOpacity>
           ))}
         </View>
@@ -58,15 +70,16 @@ export default class RecipesScreen extends Component {
 const ScreenWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
   basisBox: {
-    margin: 5,
-    width: "100%",
+    margin: 10,
+    width: ScreenWidth - 20,
   },
   recipesBox: {
     flexDirection: "row",
     flexWrap: "wrap",
   },
-  recipeBox: {
-    margin: 5,
-    width: ScreenWidth / 2 - 10,
+  recipeTabBox: {
+    flex: 1,
+    width: ScreenWidth / 2 - 20,
+    margin: 10,
   },
 });

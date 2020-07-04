@@ -6,6 +6,7 @@ import * as Font from "expo-font";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import MainNavigation from "./components/MainNavigation";
 
 export default class App extends Component {
   state = {
@@ -14,8 +15,8 @@ export default class App extends Component {
   };
 
   handleMainColorChange = (color) => {
-    this.setState({mainColor: color})
-  }
+    this.setState({ mainColor: color });
+  };
 
   async componentDidMount() {
     await Font.loadAsync({
@@ -45,7 +46,14 @@ export default class App extends Component {
             </View>
           </SafeAreaView>
           <View style={{ flex: 1, backgroundColor: this.state.mainColor }}>
-            <TabNav mainColor={this.state.mainColor} handleMainColorChange={this.handleMainColorChange} />
+            <MainNavigation
+              mainColor={this.state.mainColor}
+              handleMainColorChange={this.handleMainColorChange}
+            />
+{/*             <TabNav
+              mainColor={this.state.mainColor}
+              handleMainColorChange={this.handleMainColorChange}
+            /> */}
           </View>
         </SafeAreaProvider>
       );
